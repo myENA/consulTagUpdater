@@ -1,7 +1,6 @@
 import consul
 
 
-
 def get_nodes(session):
     nodes_dict = session.catalog.nodes()
     nodes_list = []
@@ -15,8 +14,8 @@ def get_nodes(session):
 
 
 # Get all services on a specific node
-def get_node_services(node, port=8500):
-    node = consul.Consul(host=node, port=port)
+def get_node_services(node, port=8500, api_key=''):
+    node = consul.Consul(host=node, port=port, token=api_key)
     node_services = node.agent.services()
 
     services_tags = {}
@@ -36,9 +35,9 @@ def get_current_tags(session, service):
     return tags[1][0]['ServiceTags']
 
 
-def update_tag(session, service, tag_list, port=8500):
+def update_tag(session, service, tag_list, port=8500, api_key=''):
     node = get_service_node(session, service)
-    n = consul.Consul(host=node, port=port)
+    n = consul.Consul(host=node, port=port, token=api_key)
 
     try:
         if n.agent.service.register(name=service, tags=tag_list):

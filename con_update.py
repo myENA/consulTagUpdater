@@ -1,9 +1,13 @@
 import optparse
+import os
 import sys
 
 from consulUpdate import *
 
 parser = optparse.OptionParser()
+parser.add_option('-p', action="store", dest="port", default=8500, help="Define port default=8500")
+parser.add_option('-H', action="store", dest="host", help="Define host [REQUIRED]")
+parser.add_option('-k', action="store", dest="api_key", help="Set API key")
 parser.add_option('--ls', action="store_true", dest="list_services", help="List available services")
 parser.add_option('-S', action="store", dest="service", help="Define which services to edit, "
                                                              "comma separated list \n"
@@ -16,20 +20,21 @@ parser.add_option('-U', action="store_true", default=False, dest="update", help=
 parser.add_option('--node-services', action="store_true", default=False, dest="list_node_services",
                   help="Define tag to add to service")
 parser.add_option('-n', action="store", dest="node", help="Define node for --node-services")
-parser.add_option('-p', action="store", dest="port", default=8500, help="Define port default=8500")
-parser.add_option('-H', action="store", dest="host", help="Define host default=127.0.0.1")
 
 (opts, args) = parser.parse_args()
 
 if not opts.host:
-    print "Please set the host flag (-H)"
-    sys.exit()
+    if os.environ['CONSUL_HTTP_ADDR']:
+        host = os.environ['CONSUL_HTTP_ADDR']
+    else:
+        print "Please set the host flag (-H) or set the CONSUL_HTTP_ADDR env variable"
+        sys.exit()
 else:
     host = opts.host
 
 port = opts.port
 
-c = consul.Consul(host=host, port=port)
+c = consul.Consul(host=host, port=port,token=opts.api_key)
 
 
 if opts.update and (not opts.service or not opts.tags):
