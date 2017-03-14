@@ -12,6 +12,29 @@ python setup.py install
 #### Run directly
 
 Note: If you do not have CONSUL_HTTP_ADDR set you must set the host flag -H.
+Help
+```
+Usage: con_update.py [options]
+
+Options:
+  -h, --help          show this help message and exit
+  -p PORT             Define port default=8500
+  -H HOST             Define host [REQUIRED]
+  -k API_KEY          Set API key
+  --ls                List available services
+  -S SERVICE          Define which services to edit, comma separated list
+                      service1,service2,service3
+  -f FILTER           Filter services for tag updates
+  --get-tags=GETTAGS  Get tags for service
+  -T TAGS             Define list of new tags to add to service [REQUIRED]
+  -U                  Update specified service with tag
+  --node-services     Define tag to add to service
+  -n NODE             Define node for --node-services
+  --prefix=PREFIX     The prefix to update a tag with. used with -Rs
+  --Rs                Combine the prefix and the service name to create a
+                      newtag. ex. -S test --prefix proxy- -Rs would create a
+                      tagproxy-test.
+```
 
 To update specific services:
 ```
