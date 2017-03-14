@@ -48,5 +48,4 @@ Service test has been updated with tags [u'TestTag', u'again-test', u'test1', u'
 Service consul has been updated with tags [u'TestTag', u'again-consul', u'test1', u'test2', u'test3', u'again-consul', u'boom-consul'] on node node0
 Service tag has been updated with tags [u'TestTag', u'again-tag', u'test1', u'test2', u'test3', u'again-tag', u'boom-tag'] on node node0
 Service adder has been updated with tags [u'TestTag', u'again-adder', u'test1', u'test2', u'test3', u'again-adder', u'boom-adder'] on node node0
-
 ```
