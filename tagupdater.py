@@ -23,7 +23,9 @@ parser.add_option('--prefix', action="store", dest="prefix", help="The prefix to
 parser.add_option('--Rs', action="store_true", dest="regex", help="Combine the prefix and the service name to create a new"
                                                             "tag. ex. -S test --prefix proxy- -Rs would create a tag"
                                                             "proxy-test.")
-
+parser.add_option('-r', action="store", dest="rm", help="Remove an exact service tag(s) ex: -r TAGNAME or -r TAG1,TAG2")
+parser.add_option('-R', action="store", dest="rm_regex", help="Remove a service tag with 'regex' match."
+                                                              "ex: -R urlprefix-* ")
 
 (opts, args) = parser.parse_args()
 
@@ -110,9 +112,7 @@ def filtered_update(pattern):
 
 def main():
 
-    # if opts.update and (not opts.tags or not opts.filter):
-    #     print "Please define the service or service list with the -S flag and/or the tags to add with -T"
-    #     sys.exit(1)
+
 
     if opts.filter and opts.regex:
         if not opts.prefix:
@@ -161,10 +161,22 @@ def main():
         f_services = filtered_update(opts.filter)
         print f_services
 
+    # removes a list of tags from a service
+    if opts.rm:
+        rm_tags = opts.rm.split(',')
+        filtered_tags = filtered_update(opts.rm)
+        for k, v in filtered_tags.iteritems():
+            ctags = set(get_current_tags(k))
+            diff = list(ctags.difference(set(rm_tags)))
+            update_tag(k, diff)
 
-
-
-
+    # Removes a "regex" matched tag from all services that have a match
+    if opts.rm_regex:
+        services = filtered_update(opts.rm_regex)
+        for k, v in services.iteritems():
+            ctags = set(get_current_tags(k))
+            diff = list(ctags - set(v))
+            update_tag(k, diff)
 
 if __name__ == "__main__":
     main()

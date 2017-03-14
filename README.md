@@ -66,9 +66,25 @@ Service adder has been updated with tags [u'TestTag', u'preds', u'rock', u'ENA',
 
 Update service tags with a prefix and service name based on filter
 ```
-$ python2 con_update.py -H 127.0.0.1 -f TestTag -U --prefix boom- --Rs
-Service test has been updated with tags [u'TestTag', u'again-test', u'test1', u'test2', u'test3', u'again-test', u'boom-test'] on node node0
-Service consul has been updated with tags [u'TestTag', u'again-consul', u'test1', u'test2', u'test3', u'again-consul', u'boom-consul'] on node node0
-Service tag has been updated with tags [u'TestTag', u'again-tag', u'test1', u'test2', u'test3', u'again-tag', u'boom-tag'] on node node0
-Service adder has been updated with tags [u'TestTag', u'again-adder', u'test1', u'test2', u'test3', u'again-adder', u'boom-adder'] on node node0
+$ python2 tagupdater.py -H 127.0.0.1 -f TestTag -U --prefix urlprefix-/ --Rs
+Service test has been updated with tags [u'TestTag', u'urlprefix-/test'] on node node0
+Service consul has been updated with tags [u'TestTag', u'urlprefix-/consul'] on node node0
+Service tag has been updated with tags [u'TestTag', u'urlprefix-/tag'] on node node0
+Service adder has been updated with tags [u'TestTag', u'urlprefix-/adder'] on node node0
+
 ```
+
+Remove tags with a 'regex' match
+```
+python2 tagupdater.py -H 127.0.0.1 -R urlprefix
+Service test has been updated with tags [u'TestTag'] on node node0
+Service consul has been updated with tags [u'TestTag'] on node node0
+Service tag has been updated with tags [u'TestTag'] on node node0
+Service adder has been updated with tags [u'TestTag'] on node node0
+```
+
+Remove a specific tag or list of tags
+```
+python2 tagupdater.py -H 127.0.0.1 -r test1
+
+
