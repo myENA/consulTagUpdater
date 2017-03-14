@@ -43,9 +43,10 @@ Service adder has been updated with tags [u'TestTag', u'preds', u'rock', u'ENA',
 
 Update service tags with a prefix and service name based on filter
 ```
-$ python2 con_update.py -H 127.0.0.1 -f ENA -U --prefix proxy- --Rs
-Service test has been updated with tags [u'ENA', u'proxy-test'] on node node0
-Service consul has been updated with tags [u'ENA', u'proxy-consul'] on node node0
-Service tag has been updated with tags [u'ENA', u'proxy-tag'] on node node0
-Service adder has been updated with tags [u'ENA', u'proxy-adder'] on node node0
+$ python2 con_update.py -H 127.0.0.1 -f TestTag -U --prefix boom- --Rs
+Service test has been updated with tags [u'TestTag', u'again-test', u'test1', u'test2', u'test3', u'again-test', u'boom-test'] on node node0
+Service consul has been updated with tags [u'TestTag', u'again-consul', u'test1', u'test2', u'test3', u'again-consul', u'boom-consul'] on node node0
+Service tag has been updated with tags [u'TestTag', u'again-tag', u'test1', u'test2', u'test3', u'again-tag', u'boom-tag'] on node node0
+Service adder has been updated with tags [u'TestTag', u'again-adder', u'test1', u'test2', u'test3', u'again-adder', u'boom-adder'] on node node0
+
 ```

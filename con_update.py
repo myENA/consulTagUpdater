@@ -120,9 +120,11 @@ def main():
             sys.exit(1)
         else:
             f_services = filtered_update(opts.filter)
+
             for k, v in f_services.iteritems():
-                v.append(opts.prefix + k)
-                update_tag(k, v)
+                ctags = get_current_tags(k)
+                ctags.append(opts.prefix + k)
+                update_tag(k, ctags)
 
     if opts.update and (opts.tags and opts.filter):
         f_services = filtered_update(opts.filter)
