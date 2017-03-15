@@ -124,6 +124,16 @@ def main():
                 pld['Tags'].append(opts.prefix + k)
                 update_tag(pld)
 
+    #
+    if opts.service and (opts.regex and opts.update):
+        services = opts.service.split(',')
+        for i in range(0, len(services)):
+            pld = get_service_payload(services[i])
+            print pld
+            pld['Tags'].append(opts.prefix + services[i])
+            update_tag(pld)
+
+
     if opts.update and (opts.tags and opts.filter):
         f_services = filtered_update(opts.filter)
         new_tags = opts.tags.split(',')
