@@ -47,9 +47,9 @@ def get_nodes():
 
 
 # Get all services on a specific node
-def get_node_services(service, node, port=8500, api_key=''):
-    node = consul.Consul(host=node, port=port, token=api_key)
-    node_services = node.agent.services()
+def get_node_services(node, port=8500, api_key=''):
+    n = consul.Consul(host=node, port=port, token=api_key)
+    node_services = n.agent.services()
 
     services_tags = {}
     for k, v in node_services.iteritems():
@@ -63,20 +63,23 @@ def get_service_node(service):
     return services[1][0]['Node']['Node']
 
 
-def get_current_tags(service):
-    tags = c.catalog.service(service)
-    return tags[1][0]['ServiceTags']
+def get_service_payload(service):
+    tmp = c.health.service(service)
+    payload = tmp[1][0]['Service']
+
+    return payload
 
 
-def update_tag(service, tag_list, port=8500, api_key=''):
-    node = get_service_node(service)
+def update_tag(pld, port=opts.port, api_key=opts.api_key):
+    node = get_service_node(pld['Service'])
     n = consul.Consul(host=node, port=port, token=api_key)
 
     try:
-        if n.agent.service.register(name=service, tags=tag_list):
-            print "Service {0} has been updated with tags {1} on node {2}".format(service, tag_list, node)
+        if n.agent.service.register(pld['Service'], tags=pld['Tags'], service_id=pld['ID'], address=pld['Address'],
+                                    port=pld['Port']):
+            print "Service {0} has been updated with tags {1} on node {2}".format(pld['Service'], pld['Tags'], node)
         else:
-            print "The tag update on service {0} has failed.".format(service)
+            print "The tag update on service {0} has failed.".format(pld['Service'])
     except Exception as e:
         print "An error has occurred with the request: {0}".format(e)
 
@@ -87,15 +90,12 @@ def list_services():
 
 
 # Use the tags from -T and combine with current tags
-def gen_new_tags(service):
-    current_tags = get_current_tags(service)
+def gen_new_tags(tags):
+    new_tags = opts.tags.split(',')
+    for i in range(0, len(new_tags)):
+        tags.append(new_tags[i])
 
-    tags = opts.tags.split(',')
-    for i in range(0, len(tags)):
-        current_tags.append(tags[i])
-
-    return current_tags
-
+    return tags
 
 # Find all services that match the pass string to filter on.
 def filtered_update(pattern):
@@ -112,8 +112,6 @@ def filtered_update(pattern):
 
 def main():
 
-
-
     if opts.filter and opts.regex:
         if not opts.prefix:
             print "Please define the prefix --prefix"
@@ -122,25 +120,27 @@ def main():
             f_services = filtered_update(opts.filter)
 
             for k, v in f_services.iteritems():
-                ctags = get_current_tags(k)
-                ctags.append(opts.prefix + k)
-                update_tag(k, ctags)
+                pld = get_service_payload(k)
+                pld['Tags'].append(opts.prefix + k)
+                update_tag(pld)
 
     if opts.update and (opts.tags and opts.filter):
         f_services = filtered_update(opts.filter)
         new_tags = opts.tags.split(',')
         for k, v in f_services.iteritems():
-            tags = get_current_tags(k)
+            pld = get_service_payload(k)
             for i in new_tags:
-                tags.append(i)
-                update_tag(k, tags)
+                pld['Tags'].append(i)
+
+            update_tag(pld)
 
     elif opts.update and (opts.service and opts.tags):
         services = opts.service.split(',')
         try:
             for i in range(0, len(services)):
-                new_tags = gen_new_tags(services[i])
-                update_tag(services[i], new_tags, port=opts.port)
+                pld = get_service_payload(services[i])
+                pld['Tags'] = gen_new_tags(pld['Tags'])
+                update_tag(pld)
         except Exception as e:
             print "Update failed: {0}".format(e)
             sys.exit(1)
@@ -166,17 +166,19 @@ def main():
         rm_tags = opts.rm.split(',')
         filtered_tags = filtered_update(opts.rm)
         for k, v in filtered_tags.iteritems():
-            ctags = set(get_current_tags(k))
-            diff = list(ctags.difference(set(rm_tags)))
-            update_tag(k, diff)
+            pld = get_service_payload(k)
+            ctags = set(pld['Tags'])
+            pld['Tags'] = list(ctags.difference(set(rm_tags)))
+            update_tag(pld)
 
     # Removes a "regex" matched tag from all services that have a match
     if opts.rm_regex:
         services = filtered_update(opts.rm_regex)
         for k, v in services.iteritems():
-            ctags = set(get_current_tags(k))
-            diff = list(ctags - set(v))
-            update_tag(k, diff)
+            pld = get_service_payload(k)
+            ctags = set(pld['Tags'])
+            pld['Tags'] = list(ctags - set(v))
+            update_tag(pld)
 
 if __name__ == "__main__":
     main()
