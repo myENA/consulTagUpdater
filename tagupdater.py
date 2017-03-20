@@ -124,7 +124,7 @@ def main():
                 pld['Tags'].append(opts.prefix + k)
                 update_tag(pld)
 
-    #
+
     if opts.service and (opts.regex and opts.update):
         services = opts.service.split(',')
         for i in range(0, len(services)):
@@ -167,7 +167,7 @@ def main():
         node_services = get_node_services(opts.node, opts.port)
         print node_services
 
-    if opts.filter and (not opts.update or not opts.regex):
+    if opts.filter and opts.list_services:
         f_services = filtered_update(opts.filter)
         print f_services
 
