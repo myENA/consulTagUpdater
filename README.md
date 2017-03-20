@@ -14,7 +14,7 @@ python setup.py install
 Note: If you do not have CONSUL_HTTP_ADDR set you must set the host flag -H.
 Help
 ```
-Usage: con_update.py [options]
+Usage: tagupdater.py [options]
 
 Options:
   -h, --help          show this help message and exit
@@ -38,16 +38,16 @@ Options:
 
 To update specific services:
 ```
-$ python2 con_update.py -U -S service1,service2 -T tag1,tag2
+$ python2 tagupdater.py -U -S service1,service2 -T tag1,tag2
 ```
 To list all services with a specific flag:
 ```
-$ python2 con_update.py -H 127.0.0.1 -f ENA
+$ python2 tagupdater.py -H 127.0.0.1 -f ENA
 {u'test': [u'ENA'], u'consul': [u'ENA'], u'tag': [u'ENA'], u'adder': [u'ENA']}
 ```
 To list all services:
 ```
-$ python2 con_update.py -H 127.0.0.1 --ls
+$ python2 tagupdater.py -H 127.0.0.1 --ls
 Available services:
 {u'test': [u'rock', u'ENA', u'Tuseday', u'Afternoon', u'proxy-standard', u'TestTag', u'preds'],
 u'consul': [u'preds', u'rock', u'ENA', u'Tuseday', u'Afternoon', u'proxy-standard', u'TestTag'],
@@ -57,7 +57,7 @@ u'adder': [u'proxy-standard', u'TestTag', u'preds', u'rock', u'ENA', u'Tuseday',
 
 Update services with a specific tag
 ```
-$ python2 con_update.py -H 127.0.0.1 -f ENA -U -T proxy-standard
+$ python2 tagupdater.py -H 127.0.0.1 -f ENA -U -T proxy-standard
 Service test has been updated with tags [u'TestTag', u'preds', u'rock', u'ENA', u'Tuseday', u'Afternoon', 'proxy-standard'] on node node0
 Service consul has been updated with tags [u'TestTag', u'preds', u'rock', u'ENA', u'Tuseday', u'Afternoon', 'proxy-standard'] on node node0
 Service tag has been updated with tags [u'TestTag', u'preds', u'rock', u'ENA', u'Tuseday', u'Afternoon', 'proxy-standard'] on node node0
