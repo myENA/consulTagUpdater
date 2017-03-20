@@ -167,7 +167,7 @@ def main():
         node_services = get_node_services(opts.node, opts.port)
         print node_services
 
-    if opts.filter and not opts.update:
+    if opts.filter and (not opts.update or not opts.regex):
         f_services = filtered_update(opts.filter)
         print f_services
 
